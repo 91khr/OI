@@ -1,0 +1,51 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch redir IO",
+            "preLaunchTask": "refresh",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "run.exe",
+            "args": [
+                "${fileBasenameNoExtension}.exe",
+                "data.in",
+                "data.out"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true
+        },
+        {
+            "name": "Launch redir input",
+            "preLaunchTask": "refresh",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "run.exe",
+            "args": [
+                "${fileBasenameNoExtension}.exe",
+                "data.in"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true
+        },
+        {
+            "name": "Launch no redirect",
+            "preLaunchTask": "refresh",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "run.exe",
+            "args": [ "${fileBasenameNoExtension}.exe" ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true
+        },
+    ]
+}
