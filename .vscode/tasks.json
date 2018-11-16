@@ -4,33 +4,72 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "compile",
+            "label": "new problem",
             "type": "process",
-            // "command": "./compile.bat",
-            "command": "./compile.exe",
-            "args": [
-                "${file}",
-                "${fileBasenameNoExtension}.exe",
-                // "force",
-            ],
-            "problemMatcher": "$msCompile",
-            "group": {
-                "kind": "build",
-                "isDefault": true,
+            "linux": {
+                "command": "touch"
             },
-        },
-        {
-            "label": "done problem",
-            "type": "process",
-            "command": "lua",
+            "windows": {
+                "command": "type nul >"
+            },
             "args": [
-                "done.lua",
-                "${fileDirname}",
-                "${fileBasenameNoExtension}",
-                "${fileBasename}",
+                "${workspaceFolder}/undone/${input:newprob}.cpp"
             ],
             "problemMatcher": [],
-            "group": "build",
+            "isBackground": true
         },
-    ]
+        {
+            "label": "compile",
+            "type": "process",
+            "linux": {
+                "command": "make",
+                "options": {
+                    "env": {
+                        "CXXFLAGS": "-Wall -Wextra -g -O0",
+                        "OUTPUT": "./a.out"
+                    },
+                    "problemMatcher": "$gcc"
+                }
+            },
+            "windows": {
+                "command": "nmake",
+                "options": {
+                    "env": {
+                        "CXXFLAGS": "/EHsc",
+                        "OUTPUT": "./a.exe"
+                    },
+                    "problemMatcher": "$msCompile"
+                }
+            },
+            "args": [
+                "FNAME=${file}"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "clean",
+            "type": "process",
+            "linux": {
+                "command": "make",
+                "options": {
+                    "env": {
+                        "OUTPUT": "./a.out"
+                    }
+                }
+            },
+            "windows": {
+                "command": "cmake"
+            }
+        }
+    ],
+    "inputs": [
+        {
+            "id": "newprob",
+            "type": "promptString",
+            "description": "Problem ID or description as file name",
+        },
+    ],
 }

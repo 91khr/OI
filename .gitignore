@@ -2,3 +2,5 @@
 *.obj
 *.in
 *.out
+*.swp
+test/*
