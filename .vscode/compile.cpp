@@ -11,7 +11,7 @@
 const std::string PreCompile =
     "\"C:/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/VC/Auxiliary/Build/vcvars64.bat\" > nul ";
 const std::string Compiler = "cl";
-const std::string ArgsStr = "/nologo /EHsc /W4 /utf-8 /D_CRT_SECURE_NO_WARNINGS ";
+const std::string ArgsStr = "/nologo /EHsc /W4 /utf-8 /D_CRT_SECURE_NO_WARNINGS /DDEBUG";
 
 struct FileState
 {

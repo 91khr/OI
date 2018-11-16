@@ -32,5 +32,16 @@
             "problemMatcher": [],
             "group": "build",
         },
+        {
+            "label": "copy template",
+            "type": "process",
+            "command": "lua",
+            "args": [
+                "do.lua",
+                "${file}",
+            ],
+            "problemMatcher": [],
+            "group": "build",
+        }
     ]
 }

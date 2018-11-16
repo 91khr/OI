@@ -9,7 +9,7 @@ if not dir:match('undone$') then
 end
 -- Remove executable
 os.remove(base .. '.obj')
-os.remove(base .. 'exe')
+os.remove(base .. '.exe')
 -- Get output directory
 if base:match('^p%d+$') then
     dest = 'done/'

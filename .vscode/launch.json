@@ -6,7 +6,7 @@
     "configurations": [
         {
             "name": "Launch redir IO",
-            "preLaunchTask": "refresh",
+            "preLaunchTask": "compile",
             "type": "cppvsdbg",
             "request": "launch",
             "program": "run.exe",
@@ -22,7 +22,7 @@
         },
         {
             "name": "Launch redir input",
-            "preLaunchTask": "refresh",
+            "preLaunchTask": "compile",
             "type": "cppvsdbg",
             "request": "launch",
             "program": "run.exe",
@@ -37,7 +37,7 @@
         },
         {
             "name": "Launch no redirect",
-            "preLaunchTask": "refresh",
+            "preLaunchTask": "compile",
             "type": "cppvsdbg",
             "request": "launch",
             "program": "run.exe",
