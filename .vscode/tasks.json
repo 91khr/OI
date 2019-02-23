@@ -4,44 +4,72 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "new problem",
+            "type": "process",
+            "linux": {
+                "command": "touch"
+            },
+            "windows": {
+                "command": "type nul >"
+            },
+            "args": [
+                "${workspaceFolder}/undone/${input:newprob}.cpp"
+            ],
+            "problemMatcher": [],
+            "isBackground": true
+        },
+        {
             "label": "compile",
             "type": "process",
-            // "command": "./compile.bat",
-            "command": "./compile.exe",
+            "linux": {
+                "command": "make",
+                "options": {
+                    "env": {
+                        "CXXFLAGS": "-Wall -Wextra -g -O0",
+                        "OUTPUT": "./a.out"
+                    },
+                    "problemMatcher": "$gcc"
+                }
+            },
+            "windows": {
+                "command": "nmake",
+                "options": {
+                    "env": {
+                        "CXXFLAGS": "/EHsc",
+                        "OUTPUT": "./a.exe"
+                    },
+                    "problemMatcher": "$msCompile"
+                }
+            },
             "args": [
-                "${file}",
-                "${fileBasenameNoExtension}.exe",
-                // "force",
+                "FNAME=${file}"
             ],
-            "problemMatcher": "$msCompile",
             "group": {
                 "kind": "build",
-                "isDefault": true,
+                "isDefault": true
+            }
+        },
+        {
+            "label": "clean",
+            "type": "process",
+            "linux": {
+                "command": "make",
+                "options": {
+                    "env": {
+                        "OUTPUT": "./a.out"
+                    }
+                }
             },
-        },
-        {
-            "label": "done problem",
-            "type": "process",
-            "command": "lua",
-            "args": [
-                "done.lua",
-                "${fileDirname}",
-                "${fileBasenameNoExtension}",
-                "${fileBasename}",
-            ],
-            "problemMatcher": [],
-            "group": "build",
-        },
-        {
-            "label": "copy template",
-            "type": "process",
-            "command": "lua",
-            "args": [
-                "do.lua",
-                "${file}",
-            ],
-            "problemMatcher": [],
-            "group": "build",
+            "windows": {
+                "command": "cmake"
+            }
         }
-    ]
+    ],
+    "inputs": [
+        {
+            "id": "newprob",
+            "type": "promptString",
+            "description": "Problem ID or description as file name",
+        },
+    ],
 }
