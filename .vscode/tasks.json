@@ -23,46 +23,48 @@
             "type": "process",
             "linux": {
                 "command": "make",
+                "args": [ "FNAME=${file}" ],
                 "options": {
                     "env": {
                         "CXXFLAGS": "-Wall -Wextra -g -O0",
                         "OUTPUT": "./a.out"
                     },
-                    "problemMatcher": "$gcc"
                 }
             },
             "windows": {
-                "command": "nmake",
+                "command": "python",
+                "args": [ "make.py", "FNAME=${file}" ],
                 "options": {
                     "env": {
-                        "CXXFLAGS": "/EHsc",
+                        "CXXFLAGS": "/EHsc /nologo",
                         "OUTPUT": "./a.exe"
                     },
-                    "problemMatcher": "$msCompile"
                 }
             },
-            "args": [
-                "FNAME=${file}"
-            ],
+            "problemMatcher": [ "$gcc", "$msCompile", ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
         },
         {
-            "label": "clean",
+            "label": "done problem",
             "type": "process",
             "linux": {
-                "command": "make",
-                "options": {
-                    "env": {
-                        "OUTPUT": "./a.out"
-                    }
-                }
+                "command": "mv",
             },
             "windows": {
-                "command": "cmake"
-            }
+                "command": "move",
+            },
+            "args": [ "${file}", "done/" ],
+            "problemMatcher": [],
+        },
+        {
+            "label": "start compile server",
+            "type": "process",
+            "command": "python",
+            "args": ["make.py", "server"],
+            "problemMatcher": [],
         }
     ],
     "inputs": [

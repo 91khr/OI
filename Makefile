@@ -1,7 +1,4 @@
-.PHONY: all clean
+.PHONY: all
 
 all: $(FNAME)
-	g++ $(CXXFLAGS) $(FNAME)
-
-clean:
-	-rm -f $(OUTPUT)
+	$(CXX) $(CXXFLAGS) $(FNAME)
