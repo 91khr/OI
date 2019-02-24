@@ -1,7 +1,7 @@
 .PHONY: all clean
 
 all: $(FNAME)
-	g++ $(CXXFLAGS) $(FNAME)
+	$(CXX) $(CXXFLAGS) $(FNAME)
 
 clean:
 	-rm -f $(OUTPUT)

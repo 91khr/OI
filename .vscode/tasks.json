@@ -23,47 +23,38 @@
             "type": "process",
             "linux": {
                 "command": "make",
+                "args": [
+                    "FNAME=${file}"
+                ],
                 "options": {
                     "env": {
                         "CXXFLAGS": "-Wall -Wextra -g -O0",
                         "OUTPUT": "./a.out"
                     },
-                    "problemMatcher": "$gcc"
                 }
             },
             "windows": {
-                "command": "nmake",
+                "command": "python",
+                "args": [
+                    "make.py",
+                    "FNAME=${file}"
+                ],
                 "options": {
                     "env": {
                         "CXXFLAGS": "/EHsc",
                         "OUTPUT": "./a.exe"
                     },
-                    "problemMatcher": "$msCompile"
                 }
             },
-            "args": [
-                "FNAME=${file}"
+            "problemMatcher": [
+                "$gcc",
+                "$msCompile",
             ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
         },
-        {
-            "label": "clean",
-            "type": "process",
-            "linux": {
-                "command": "make",
-                "options": {
-                    "env": {
-                        "OUTPUT": "./a.out"
-                    }
-                }
-            },
-            "windows": {
-                "command": "cmake"
-            }
-        }
     ],
     "inputs": [
         {
