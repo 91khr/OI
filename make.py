@@ -4,7 +4,8 @@ import sys
 import subprocess as sp
 
 # vcvars.bat path
-VcVars = "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Auxiliary/Build/vcvars64.bat"
+#VcVars = "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Auxiliary/Build/vcvars64.bat"
+VcVars = "C:/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/VC/Auxiliary/Build/vcvars64"
 # Your default system encoding
 enc = 'cp936'
 
@@ -47,21 +48,29 @@ def Server():
             now = cmdout.readline()
         cmdout.readline()
         # Send back and close
-        client.send(bytes(''.join(output[2:-2]), encoding=enc))
+        client.send(bytes('\n'.join(output[2:-2]), encoding=enc))
         client.close()
 
-# If server is required, start server
-if len(sys.argv) >= 2 and sys.argv[1] == 'server':
-    Server()
-# Try connect
-try:
-    client = socket.socket()
-    client.connect((host, port))
+def SendCmd(c = None):
+    client = c
+    if client == None:
+        client = socket.socket()
+        client.connect((host, port))
     ctnt = bytes('nmake ' + ' '.join(sys.argv[1:]) + '\n', encoding=enc)
     client.send(ctnt)
     print(client.recv(2048).decode(enc))
     client.close()
+
+# If server is required, start server
+if len(sys.argv) >= 2 and sys.argv[1] == 'server':
+    Server()
+    exit()
+# Try connect
+try:
+    client = socket.socket()
+    client.connect((host, port))
+    SendCmd(client)
+    # If can't, start server and try again
 except socket.error as e:
-    print('socket error:', e.errno);
-    os.spawnl(os.P_DETACH, sys.executable, " make.py server")
+    print('Cannot connect to server, please check if server is started')
 

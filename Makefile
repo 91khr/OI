@@ -1,7 +1,4 @@
-.PHONY: all clean
+.PHONY: all
 
 all: $(FNAME)
 	$(CXX) $(CXXFLAGS) $(FNAME)
-
-clean:
-	-rm -f $(OUTPUT)
