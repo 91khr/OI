@@ -3,9 +3,16 @@ if has('win32')
 else
     let g:VimOI_CompileArgs = ['-O0', '-Wall', '-Wextra', '-g']
 endif
-command! Done execute 'AsyncRun lua done.lua ' . expand('%:h') . ' ' . expand('%:t:r') . ' ' . expand('%:t')
-command! -nargs=1 Do AsyncRun lua do.lua undone/<args>.cpp
-command! Test execute 'AsyncRun -post=copen python test/' . expand('%:t:r') . '.py'
+
+function! s:DoneProblem()
+    bwipeout
+endfunction
+
+command! Done call s:DoneProblem()
+command! -nargs=1 Do e <args>.cpp
+command! Test execute 'AsyncRun -post=copen python check.py'
+
 let g:ycm_confirm_extra_conf = 0
 " Fast yank the whole file
 nnoremap YY gg"+yG''zz
+

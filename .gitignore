@@ -3,4 +3,4 @@
 *.in
 *.out
 *.swp
-test/*
+.vscode/ipch/*
