@@ -1,0 +1,27 @@
+\documentclass[a5paper, 12pt]{article}
+\usepackage{ulem}
+\usepackage{amsmath}
+\usepackage[scale=1]{geometry}
+
+\pagestyle{empty}
+
+\newcommand \st {\text{, s.t. }}
+
+\begin{document}
+% uva1358
+\begin{align*}
+    e_i &= \sum_{ch}\frac{1}{n}e_{jmp_{i, ch}} + 1
+\end{align*}
+
+We know that $\exists ch\st jmp_{i, ch} = i+1$,
+so furthermore:
+\begin{align*}
+    e_i &= \frac{1}{n}(\sum_{ch|jmp_{i, ch} \not= i+1} e_{jmp_{i, ch}} + e_{i + 1}) + 1 \\
+    e_{|s|} &= 0
+\end{align*}
+
+Note that only $e_{i+1}$ rely on item after current.
+Therefore reduction from $e_{|s|}$ to $e_0$ is possible.(where $e_0$ is answer)
+We can assume that (after elimation) $\forall j|jmp_{i, ch} = j, j \le i$.
+
+\end{document}

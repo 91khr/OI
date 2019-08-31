@@ -1,11 +1,9 @@
 #include <cstdio>
 
 const int MaxN = int(5e4) + 7;
+const int Inf = 0x7fffffff;
 
-int n, m;
-int weight[MaxN];
-int value[MaxN];
-int child[MaxN][2];
+int n;
 
 int main()
 {

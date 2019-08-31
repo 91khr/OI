@@ -1,4 +1,4 @@
-#! python3
+#! /bin/python
 import random as rand
 import subprocess as sp
 import os
@@ -13,19 +13,23 @@ def runprog(progname, input, limit = None):
     return output, log
 # }}}
 
+# {{{ Helper functions
+def getprogout(name, inputstr):
+    pass
+# }}}
+
 # Data generator, return a dict of 'input' and 'output'
 # return 'input' as a list to use SPJ, then it will be passed to SPJ
 def gendata():
     import functools as ft
 
-    n, l = rand.randint(5, 10), rand.randint(3, 12)
-    nums = [ rand.randint(2, 7) for i in range(n) ]
-    data = "{} {}\n".format(n, l) + '\n'.join((str(i) for i in nums))
-
+    def gennum():
+        return int(''.join(map(lambda i: str(rand.randint(0, 9)), range(20, rand.randint(30, 50)))))
+    n1, n2 = gennum(), gennum()
     return {
-        'input': data,
-        'output': runprog('./std.out', data)[0]
-    }
+            "input": "{} {}\n".format(n1, n2),
+            "output": "{}\n".format(int(n1 / n2))
+            }
 
 # SPJ, data is input('input' is used by python)
 # std is output returned by gendata
@@ -47,13 +51,15 @@ class Check:
         self.std = data['output']
 
     def run(self, limit = None):
-        self.output, self.log = runprog(self.prog, self.input[0] if self.SPJ else self.input, limit)
-        if self.SPJ:
-            info = SPJ(self.input, self.std, self.output)
-            self.SPJinfo = info['info']
-            return info['result']
-        else:
-            return self.output == self.std
+        with sp.Popen(self.prog, stdin = sp.PIPE, stdout = sp.PIPE, stderr = sp.PIPE,
+                universal_newlines = True, shell = True) as proc:
+            self.output, self.log = proc.communicate(self.input, limit)
+            if self.SPJ:
+                info = SPJ(self.input, self.std, self.output)
+                self.SPJinfo = info.info
+                return info.result
+            else:
+                return self.output == self.std
 
     def data(self):
         res = {
@@ -79,7 +85,7 @@ def checkUntilPass(prog = "./a.out", limit = None):
     now = 1
     try:
         while True:
-            print("\rdata", now, end = "... ", flush = True, file = sys.stderr)
+            print("\rdata", now, end = "... ", flush = True)
             now = now + 1
             handle = Check(prog)
             if not handle.run(limit):
@@ -87,25 +93,28 @@ def checkUntilPass(prog = "./a.out", limit = None):
                 printData(handle.data())
                 break
             else:
-                print("passed", end='', file = sys.stderr)
+                print("passed", end='')
     except KeyboardInterrupt:
-        print("\nend", file = sys.stderr)
+        print("\nend.")
 
 def checkByCount(count, prog = "./a.out", limit = None):
     for now in range(1, count):
-        print("\rdata", now, end = "... ", flush = True, file = sys.stderr)
+        print("\rdata", now, end = "... ", flush = True)
         handle = Check(prog)
         if not handle.run(limit):
             print("failed, data:")
             printData(handle.data())
             break
         else:
-            print("passed", end='', file = sys.stderr)
+            print("passed", end='')
 # }}}
 
 if __name__ == "__main__":
     # Modify this to use different check method
-    checkUntilPass()
+    checkUntilPass('./a.out sdf')
     #print(gendata())
+    #data = gendata()
+    #print("input:\n", data['input'])
+    #print("output:\n", data['output'])
 
-# vim: fdm=marker
+# vim: set fdm=marker:

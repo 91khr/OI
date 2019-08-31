@@ -6,8 +6,7 @@
 
 ## 对拍
 
-使用`check.py`, 要先修改`check/generate.py`和`check/varify.py`.
-~~好懒...~~
+使用`check.py`, 然后改一下里面的数据生成函数, 文档都在代码里了.
 
 ## Windows下的特殊设置
 
