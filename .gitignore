@@ -4,3 +4,5 @@
 *.out
 *.swp
 .vscode/ipch/*
+temp/*
+problem.*

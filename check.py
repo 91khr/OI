@@ -1,4 +1,4 @@
-#! python3
+#! python
 import random as rand
 import subprocess as sp
 import os
@@ -13,19 +13,15 @@ def runprog(progname, input, limit = None):
     return output, log
 # }}}
 
+# {{{ Helper functions
+def getprogout(name, inputstr):
+    pass
+# }}}
+
 # Data generator, return a dict of 'input' and 'output'
 # return 'input' as a list to use SPJ, then it will be passed to SPJ
 def gendata():
     import functools as ft
-
-    n, l = rand.randint(5, 10), rand.randint(3, 12)
-    nums = [ rand.randint(2, 7) for i in range(n) ]
-    data = "{} {}\n".format(n, l) + '\n'.join((str(i) for i in nums))
-
-    return {
-        'input': data,
-        'output': runprog('./std.out', data)[0]
-    }
 
 # SPJ, data is input('input' is used by python)
 # std is output returned by gendata
@@ -107,5 +103,8 @@ if __name__ == "__main__":
     # Modify this to use different check method
     checkUntilPass()
     #print(gendata())
+    #data = gendata()
+    #print("input:\n", data['input'])
+    #print("output:\n", data['output'])
 
-# vim: fdm=marker
+# vim: set fdm=marker:
