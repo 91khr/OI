@@ -1,4 +1,4 @@
-#! python
+#! /bin/python
 import random as rand
 import subprocess as sp
 import os
@@ -22,6 +22,14 @@ def getprogout(name, inputstr):
 # return 'input' as a list to use SPJ, then it will be passed to SPJ
 def gendata():
     import functools as ft
+
+    def gennum():
+        return int(''.join(map(lambda i: str(rand.randint(0, 9)), range(20, rand.randint(30, 50)))))
+    n1, n2 = gennum(), gennum()
+    return {
+            "input": "{} {}\n".format(n1, n2),
+            "output": "{}\n".format(int(n1 / n2))
+            }
 
 # SPJ, data is input('input' is used by python)
 # std is output returned by gendata

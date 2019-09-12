@@ -1,5 +1,5 @@
 #include <cstdio>
-#include <functional>
+#include <queue>
 #include <cctype>
 #include <cinttypes>
 #include <cstring>
@@ -11,10 +11,6 @@ void Unused(...) {}
 #else
   #define echo(...) fprintf(stderr, __VA_ARGS__)
 #endif
-#define HELPER_COMBINE_IMPL(a, b) a##b
-#define HELPER_COMBINE(a, b) HELPER_COMBINE_IMPL(a, b)
-#define HELPER_TMPVARNAME(index) HELPER_COMBINE(HELPER_COMBINE(helper_tmpvar_, __LINE__), HELPER_COMBINE(_, index))
-//
 #define Reps(var, init, delim, step) for (int var = (init); var <= (delim); var += (step))
 #define Repr(var, init, delim, step) for (int var = (init); var >= (delim); var += (step))
 #define Rep(var, init, delim) Reps(var, init, delim, 1)
@@ -111,31 +107,114 @@ public:
 }io;
 }  // End namespace IO_Helper
 using IO_Helper::io;
-//
-namespace RAIIOper
-{
-class RAIIOper
-{
-private:
-    std::function<void(void)> defer;
-    bool cond;
-public:
-    RAIIOper(std::function<void(void)> cdr, bool wh = true) : defer(cdr), cond(wh) {}
-    ~RAIIOper() { if (cond) defer(); }
-};
-#define PostOper(oper) Useful_Helpers::RAIIOper::RAIIOper HELPER_TMPVARNAME(0)(oper)
-#define PostOperIf(cond, oper) \
-    Useful_Helpers::RAIIOper::RAIIOper HELPER_TMPVARNAME(0)(oper, cond)
-}  // End namespace RAIIOper
 } using namespace Useful_Helpers;
 
-const int MaxN = int(1e5) + 7;
-const i64t Mod = int(1e9) + 7;
+const int MaxN = int(200) + 7;
 const int Inf = 0x3f3f3f3f;
-const i64t Inf64 = 0x3f3f3f3f3f3f3f3f;
+
+void solve();
 
 i32t main()
 {
+    int T;
+    io.read(T);
+    while (T--)
+        solve();
     return 0;
+}
+
+int cup[3], water, target;
+bool used[MaxN][MaxN];
+
+typedef int waterTy;
+typedef int ansTy;
+typedef std::pair<waterTy, waterTy> handle;
+std::priority_queue<std::pair<ansTy, handle>,
+    std::vector<std::pair<ansTy, handle>>,
+    std::greater<std::pair<ansTy, handle>>> bfsq;
+#define mp(a, b) std::make_pair(a, b)
+waterTy ansval;
+ansTy ans;
+
+void update(waterTy nowval, ansTy nowans)
+{
+    if ((nowval > ansval && nowval <= target) ||
+            (nowval == ansval && nowans < ans))
+    {
+        ansval = nowval;
+        ans = nowans;
+    }
+}
+
+// first: current water
+// second: max amount
+std::pair<ansTy, handle> pour(ansTy pre, handle src, handle dst)
+{
+    waterTy rest = dst.second - dst.first;
+    ansTy res;
+    if (src.first < rest)
+    {
+        dst.first += src.first;
+        res = pre + src.first;
+        update(dst.first, res);
+        src.first = 0;
+    }
+    else
+    {
+        dst.first += rest;
+        res = pre + rest;
+        update(dst.first, res);
+        src.first -= rest;
+        update(src.first, res);
+    }
+    return mp(res, mp(src.first, dst.first));
+}
+
+// first: id
+// second: val
+int getone(int id, handle src, handle dst)
+{
+    if (src.first == id)
+        return src.second;
+    else if (dst.first == id)
+        return dst.second;
+    else
+        return water - src.second - dst.second;
+}
+handle getab(handle src, handle dst)
+{
+    return mp(getone(0, src, dst), getone(1, src, dst));
+}
+
+void solve()
+{
+    io.read(cup, 0, 2);
+    io.read(target);
+    water = cup[2];
+    ansval = 0;
+
+    memset(used, false, sizeof(used));
+    bfsq.push(mp(0, mp(0, 0)));
+    while (!bfsq.empty())
+    {
+        const auto now = bfsq.top();
+        bfsq.pop();
+        const int vals[] = {
+            now.second.first,
+            now.second.second,
+            water - now.second.first - now.second.second,
+        };
+        if (used[vals[0]][vals[1]])
+            continue;
+        used[vals[0]][vals[1]] = true;
+        Rep(i, 0, 2) Rep(j, 0, 2)
+            if (i != j)
+            {
+                std::pair<waterTy, handle> res = pour(now.first, mp(vals[i], cup[i]), mp(vals[j], cup[j]));
+                res.second = getab(mp(i, res.second.first), mp(j, res.second.second));
+                bfsq.push(res);
+            }
+    }
+    io.print("$ $\n", ans, ansval);
 }
 

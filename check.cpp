@@ -2,12 +2,22 @@
 #include <cmath>
 #include <string>
 #include <cstdlib>
+#include <algorithm>
 
-const char outfile[] = "data.in";
-const char chkprog[] = "diff std.out prog.out";
-FILE *out;
+const int MaxN = 19;
+
+int n;
+int sets[MaxN];
 
 void gendata()
+{
+}
+
+int solve_std()
+{
+}
+
+int solve_prog()
 {
 }
 

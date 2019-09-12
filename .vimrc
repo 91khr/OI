@@ -1,7 +1,7 @@
 if has('win32')
     let g:VimOI_CompileArgs = ['/Od', '/nologo', '/utf-8', '/EHsc', '/W4', '/D_CRT_SECURE_NO_WARNINGS', '/DDEBUG']
 else
-    let g:VimOI_CompileArgs = ['-O0', '-Wall', '-Wextra', '-g']
+    let g:VimOI_CompileArgs = ['-O0', '-Wall', '-Wextra', '-g', '-DDEBUG']
     let g:VimOI_CompileProg = 'g++'
 endif
 let g:ycm_confirm_extra_conf = 0

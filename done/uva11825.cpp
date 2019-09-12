@@ -1,5 +1,4 @@
 #include <cstdio>
-#include <functional>
 #include <cctype>
 #include <cinttypes>
 #include <cstring>
@@ -11,10 +10,6 @@ void Unused(...) {}
 #else
   #define echo(...) fprintf(stderr, __VA_ARGS__)
 #endif
-#define HELPER_COMBINE_IMPL(a, b) a##b
-#define HELPER_COMBINE(a, b) HELPER_COMBINE_IMPL(a, b)
-#define HELPER_TMPVARNAME(index) HELPER_COMBINE(HELPER_COMBINE(helper_tmpvar_, __LINE__), HELPER_COMBINE(_, index))
-//
 #define Reps(var, init, delim, step) for (int var = (init); var <= (delim); var += (step))
 #define Repr(var, init, delim, step) for (int var = (init); var >= (delim); var += (step))
 #define Rep(var, init, delim) Reps(var, init, delim, 1)
@@ -111,31 +106,68 @@ public:
 }io;
 }  // End namespace IO_Helper
 using IO_Helper::io;
-//
-namespace RAIIOper
-{
-class RAIIOper
-{
-private:
-    std::function<void(void)> defer;
-    bool cond;
-public:
-    RAIIOper(std::function<void(void)> cdr, bool wh = true) : defer(cdr), cond(wh) {}
-    ~RAIIOper() { if (cond) defer(); }
-};
-#define PostOper(oper) Useful_Helpers::RAIIOper::RAIIOper HELPER_TMPVARNAME(0)(oper)
-#define PostOperIf(cond, oper) \
-    Useful_Helpers::RAIIOper::RAIIOper HELPER_TMPVARNAME(0)(oper, cond)
-}  // End namespace RAIIOper
 } using namespace Useful_Helpers;
 
-const int MaxN = int(1e5) + 7;
+const int MaxN = 19;
 const i64t Mod = int(1e9) + 7;
 const int Inf = 0x3f3f3f3f;
 const i64t Inf64 = 0x3f3f3f3f3f3f3f3f;
 
+int n;
+
+void solve();
+
 i32t main()
 {
+    for (int count = 1; io.read(n) && n != 0; ++count)
+    {
+        io.print("Case $: ", count);
+        solve();
+    }
     return 0;
+}
+
+int sets[MaxN];
+int dp[1 << MaxN];
+int cov[1 << MaxN];
+
+void solve()
+{
+    Rep(i, 1, n)
+    {
+        int m;
+        io.read(m);
+        sets[i] = 1 << (i - 1);
+        Rep(j, 1, m)
+        {
+            int k;
+            io.read(k);
+            sets[i] |= 1 << k;
+        }
+    }
+
+    Rep(i, 1, (1 << n) - 1)
+    {
+        Rep(j, 0, n - 1)
+            if (i & 1 << j)
+            {
+                cov[i] = cov[(i - 1) & i] | sets[j + 1];
+                break;
+            }
+        //echo("%x ", cov[i]);
+    }
+    //echo("\n");
+
+    Rep(stat, 1, (1 << n) - 1)
+    {
+        dp[stat] = 0;
+        for (int sub = stat; sub; sub = stat & (sub - 1))
+            if (cov[sub] == (1 << n) - 1)
+            {
+                dp[stat] = std::max(dp[stat], dp[sub ^ stat] + 1);
+                //echo("set %x(%d) to %d(%x %x:%d)\n", stat, sub, dp[stat], sub, sub ^ stat, dp[sub ^ stat]);
+            }
+    }
+    io.print("$\n", dp[(1 << n) - 1]);
 }
 
