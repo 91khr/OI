@@ -129,13 +129,55 @@ ImplPrint(u64t, "%" PRIu64);
 [[maybe_unused]] auto &io = IO_Helper::io_impl;
 } using namespace Useful_Helpers;
 
-[[maybe_unused]] const int MaxN = int(1e5) + 7;
+[[maybe_unused]] const int MaxN = int(5e4) + 7;
 [[maybe_unused]] const i64t Mod = int(1e9) + 7;
 [[maybe_unused]] const int Inf = 0x3f3f3f3f;
 [[maybe_unused]] const i64t Inf64 = 0x3f3f3f3f3f3f3f3f;
 
+int n;
+struct LandT {
+    i64t w, h;
+    int read() { return io.read(w), io.read(h); }
+    friend bool operator<(const LandT &a, const LandT &b) { return a.w < b.w; }
+} land[MaxN];
+i64t dp[MaxN], slope[MaxN];
+
 int main()
 {
+    io.read(n);
+    io.read(land, 1, n);
+    std::sort(land + 1, land + n + 1);
+    int top = 1;
+    Rep(now, 2, n)
+    {
+        while (top > 0 && land[now].h >= land[top].h)
+            --top;
+        land[++top] = land[now];
+    }
+    n = top;
+
+    Rep(i, 1, n)
+        echo("(%ld %ld) ", land[i].w, land[i].h);
+    echo("\n");
+
+    dp[0] = 0;
+    land[0].w = land[0].h = 0;
+    slope[top = 1] = 0;
+    int front = 1;
+    auto price = [] (int pre, int now) { return dp[pre] + land[now].w * land[pre + 1].h; };
+    Rep(i, 1, n)
+    {
+        while (front < top && price(slope[front], i) > price(slope[front + 1], i))
+            ++front;
+        echo("pop front to %d\n", front);
+        dp[i] = price(slope[front], i);
+        slope[++top] = i;
+    }
+    Rep(i, 1, n)
+        echo("%ld ", dp[i]);
+    echo("\n");
+    io.print("$\n", dp[n]);
+
     return 0;
 }
 

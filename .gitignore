@@ -1,7 +1,14 @@
+# Executable and compilation intermediate file
+a.out
+check
 *.exe
 *.obj
+# Test data
 *.in
 *.out
+*.ans
+*.log
+# Temp files
 *.swp
 .vscode/ipch/*
 temp/*

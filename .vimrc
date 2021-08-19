@@ -3,20 +3,25 @@ if has('win32')
 else
     let g:VimOI_CompileArgs = ['-O0', '-Wall', '-Wextra', '-g', '-DDEBUG']
     let g:VimOI_CompileProg = 'g++'
+    let g:CppCompileFlags = ['-DDEBUG']
 endif
-let g:ycm_confirm_extra_conf = 0
+
 " Fast yank and copy the whole file
 nnoremap YY gg"+yG''zz
 nnoremap YP ggVG"+p
+
 " Create solution file from template
-command! -nargs=1 BegProb execute "edit " . luaeval("assert(loadfile('utils/do.lua'))('" . <q-args> . "')")
-command! EndProb execute (has("win32") ? "!move " : "!mv ") . expand('%') . ' '
+command! -nargs=1 -bar BegProb execute "edit " . luaeval("assert(loadfile('utils/do.lua'))('" . <q-args> . "')")
+command! -bar EndProb execute (has("win32") ? "!move " : "!mv ") . expand('%') . ' '
             \ . expand('%:h:h') . '/done/' . expand('%:t') | bw
-command! DelProb execute (has("win32") ? "!del " : "!rm ") . expand('%') | bw
-command! EndProbAsTmpl execute (has("win32") ? "!move " : "!mv ") . expand('%') . ' '
+command! -bar DelProb execute (has("win32") ? "!del " : "!rm ") . expand('%') | bw
+command! -bar EndProbAsTmpl execute (has("win32") ? "!move " : "!mv ") . expand('%') . ' '
             \ . expand('%:h:h') . '/tmpl/' . input("Template name: ", expand('%:t:r')) . '.cpp' | bw
-command! Clean execute (has("win32") ? "!del *.obj *.exe" : "!rm a.out")
+command! -bar Clean execute (has("win32") ? "!del *.obj *.exe" : "!rm a.out")
 
 " Going to merge into VimOI
 command! OINewRedirBuf below 7split | enew | echom "Redir buffer at " . bufnr('%') | set bt=nofile winfixheight
+
+" View a graph
+command! -range=% -bar Viz <line1>,<line2>w !xdot <(cat) &
 

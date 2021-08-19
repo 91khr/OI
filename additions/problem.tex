@@ -1,28 +1,29 @@
-\documentclass[a5paper]{minimal}
+\documentclass[a5paper]{article}
 \usepackage[scale=0.9]{geometry}
+\usepackage[parfill]{parskip}
 \usepackage{xeCJK}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{extarrows}
-\usepackage{ulem}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{extarrows, ulem}
 
 \setCJKmainfont{Source Han Serif CN}
 
+\newtheorem{lemma}{Lemma}
+
 \begin{document}
 
-带权最大流匹配, 找出最大流量下费用(和)最小的方案.
+\begin{lemma}
+    $\forall n \ge 2, \forall 2 \le i < n, \gcd(n, i) = \gcd(n, n - i)$
+\end{lemma}
 
-注意到只要保证每次增广都是沿着费用最小的路径增广, 就能保证最后的总费用最小.
-那么可以用(关于费用的)最短路来保证每次到达一个点的时候都是沿着费用最小的路径的.
+\begin{proof}
+不妨设$i < \frac{n}{2}$, 则$n \mod (n - i) = n - (n - i) = i$.
+又, 令$n = pi + q (q < i)$则:\begin{align*}
+    \gcd(n, i) &= \gcd(q, i) \\
+    \gcd(n, n - i) &= \gcd(i, (p - 1)i + q)
+\end{align*}
 
-同时, dijkstra的松弛是这么定义的: 令$d_i$为$i$的距离, $w$为$i, j$之间的距离,
-那么$d_j = \min(d_i + w)$. 因此, 要保证$\forall d_j > d_i$, 有以下两种方案:
-
-\begin{enumerate}
-    \item 将每条边的费用加上一个值, 使得所有边的费用都为正,
-        这样需要在增广出一条路径时将这条路径中所有额外的费用都减去.
-    \item 
-\end{enumerate}
+明显, 等号右边两式相等.
+\end{proof}
 
 \end{document}
 
