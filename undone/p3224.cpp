@@ -4,9 +4,7 @@
 #include <cinttypes>
 #include <cstring>
 #include <algorithm>
-#if !defined(DEBUG)
-#    define BUFFERED_IO
-#endif  // DEBUG
+#define BUFFERED_IO
 namespace Useful_Helpers {
 void Unused(...) {}
 #if defined(DEBUG) || defined(DEBUG_ECHO)
@@ -137,8 +135,107 @@ ImplPrint(u64t, "%" PRIu64);
 [[maybe_unused]] const int Inf = 0x3f3f3f3f;
 [[maybe_unused]] const i64t Inf64 = 0x3f3f3f3f3f3f3f3f;
 
+int n, m, q;
+int orig[MaxN];
+
+struct {
+    int par[MaxN];
+    int query(int now) { return now == par[now] ? now : par[now] = query(par[now]); }
+    void merge(int a, int b) { par[query(b)] = query(a); }
+} uset;
+
+struct SegTree
+{
+private:
+    inline static const int NNode = MaxN * 15;
+    inline static int width[NNode];
+    inline static int child[NNode][2];
+    inline static int maxid = 0;
+    int root;
+
+public:
+    void build(int val, int now, int l, int r)
+    {
+        width[now] = 1;
+        if (l == r)
+            return;
+        int mid = (l + r) / 2;
+        int side = val > mid;
+        child[now][side] = ++maxid;
+        child[now][!side] = 0;
+        if (side)
+            build(val, child[now][side], mid + 1, r);
+        else
+            build(val, child[now][side], l, mid);
+    }
+    int query(int rank, int base, int now, int l, int r)
+    {
+        if (l == r)
+            return base + 1;
+        int mid = (l + r) / 2;
+        int len = width[child[now][0]];
+        if (len >= rank)
+            return query(rank, base, child[now][0], l, mid);
+        else
+            return query(rank - len, base + len, child[now][1], mid + 1, r);
+    }
+    int merge_impl(int now, int other, int l, int r)
+    {
+        if (now == 0 || other == 0)
+            return now + other;
+        width[now] += width[other];
+        if (l == r)
+            return now;
+        int mid = (l + r) / 2;
+        child[now][0] = merge_impl(child[now][0], child[other][0], l, mid);
+        child[now][1] = merge_impl(child[now][1], child[other][1], mid + 1, r);
+        return now;
+    }
+    void merge(SegTree other)
+    {
+        root = merge_impl(root, other.root, 1, n);
+    }
+    int size() { return width[root]; }
+};
+
+SegTree tree[MaxN];
+
 int main()
 {
+    io.read(n, m);
+    io.read(orig, 1, n);
+    Rep(i, 1, n)
+        tree[i].build(orig[i], 1, 1, n);
+    while (m--)
+    {
+        int a, b;
+        io.read(a, b);
+        tree[uset.query(a)].merge(tree[uset.query(b)]);
+        uset.merge(a, b);
+    }
+    io.read(q);
+    while (q--)
+    {
+        char op;
+        int x, y;
+        io.read(op, x, y);
+        switch (op)
+        {
+        case 'Q':
+            if (SegTree &t = tree[uset.query(x)]; y > t.size())
+                io.print("-1\n");
+            else
+                io.print("$\n", t.query(y, 0, 1, 1, n));
+            break;
+        case 'B':
+            if (int xpar = uset.query(x), ypar = uset.query(y); xpar != ypar)
+            {
+                tree[xpar].merge(tree[ypar]);
+                uset.merge(x, y);
+            }
+            break;
+        }
+    }
     return 0;
 }
 

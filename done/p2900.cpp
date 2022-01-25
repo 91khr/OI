@@ -156,26 +156,25 @@ int main()
     }
     n = top;
 
-    Rep(i, 1, n)
-        echo("(%ld %ld) ", land[i].w, land[i].h);
-    echo("\n");
-
     dp[0] = 0;
     land[0].w = land[0].h = 0;
     slope[top = 1] = 0;
     int front = 1;
     auto price = [] (int pre, int now) { return dp[pre] + land[now].w * land[pre + 1].h; };
+    auto vaildslope = [] (int top, int now) {
+        int head = slope[top], pre = slope[top - 1];
+        return (dp[now] - dp[head]) * (land[pre + 1].h - land[now + 1].h) >
+            (dp[now] - dp[pre]) * (land[head + 1].h - land[now + 1].h);
+    };
     Rep(i, 1, n)
     {
         while (front < top && price(slope[front], i) > price(slope[front + 1], i))
             ++front;
-        echo("pop front to %d\n", front);
         dp[i] = price(slope[front], i);
+        while (top > front && !vaildslope(top, i))
+            --top;
         slope[++top] = i;
     }
-    Rep(i, 1, n)
-        echo("%ld ", dp[i]);
-    echo("\n");
     io.print("$\n", dp[n]);
 
     return 0;

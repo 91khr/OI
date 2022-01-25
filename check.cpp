@@ -10,6 +10,7 @@ else
 fi
 #endif
 #include <concepts>
+#include <functional>
 #include <vector>
 #include <string>
 #include <cstdio>
@@ -169,8 +170,7 @@ namespace DataGen
 void refresh();
 std::string getdata();
 std::string getans();
-//bool SPJ(const std::string &out);
-struct SPJ_struct { bool operator()(const std::string &out); } SPJ;
+std::function<bool(const std::string &)> SPJ;
 }  // End namespace DataGen
 
 // {{{ Check utils
@@ -273,7 +273,7 @@ public:
     {
         execChild();
         readResult();
-        if constexpr (std::is_function_v<decltype(DataGen::SPJ)>)
+        if (DataGen::SPJ)
             return DataGen::SPJ(outstr);
         else
         {

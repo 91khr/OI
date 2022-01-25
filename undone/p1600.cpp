@@ -4,9 +4,7 @@
 #include <cinttypes>
 #include <cstring>
 #include <algorithm>
-#if !defined(DEBUG)
-#    define BUFFERED_IO
-#endif  // DEBUG
+#define BUFFERED_IO
 namespace Useful_Helpers {
 void Unused(...) {}
 #if defined(DEBUG) || defined(DEBUG_ECHO)

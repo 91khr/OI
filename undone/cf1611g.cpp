@@ -4,9 +4,7 @@
 #include <cinttypes>
 #include <cstring>
 #include <algorithm>
-#if !defined(DEBUG)
-#    define BUFFERED_IO
-#endif  // DEBUG
+#define BUFFERED_IO
 namespace Useful_Helpers {
 void Unused(...) {}
 #if defined(DEBUG) || defined(DEBUG_ECHO)
@@ -137,8 +135,29 @@ ImplPrint(u64t, "%" PRIu64);
 [[maybe_unused]] const int Inf = 0x3f3f3f3f;
 [[maybe_unused]] const i64t Inf64 = 0x3f3f3f3f3f3f3f3f;
 
+int n, m;
+int prev[MaxN][2];
+bool avail[MaxN];
+
+void solve()
+{
+    io.read(n, m);
+    Rep(i, 1, m)
+        prev[i][0] = prev[i][1] = 0;
+    Rep(i, 1, n)
+        Rep(j, 1, m)
+        {
+            char c;
+            io.read(c);
+        }
+}
+
 int main()
 {
+    int t;
+    io.read(t);
+    while (t--)
+        solve();
     return 0;
 }
 

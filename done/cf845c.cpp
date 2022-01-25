@@ -4,9 +4,7 @@
 #include <cinttypes>
 #include <cstring>
 #include <algorithm>
-#if !defined(DEBUG)
-#    define BUFFERED_IO
-#endif  // DEBUG
+#define BUFFERED_IO
 namespace Useful_Helpers {
 void Unused(...) {}
 #if defined(DEBUG) || defined(DEBUG_ECHO)
@@ -132,13 +130,57 @@ ImplPrint(u64t, "%" PRIu64);
 [[maybe_unused]] auto &io = IO_Helper::io_impl;
 } using namespace Useful_Helpers;
 
-[[maybe_unused]] const int MaxN = int(1e5) + 7;
+[[maybe_unused]] const int MaxN = int(2e5) + 7;
 [[maybe_unused]] const i64t Mod = int(1e9) + 7;
 [[maybe_unused]] const int Inf = 0x3f3f3f3f;
 [[maybe_unused]] const i64t Inf64 = 0x3f3f3f3f3f3f3f3f;
 
+int n;
+
+struct Event
+{
+    int time, id;
+    bool isin;
+    friend bool operator<(const Event &a, const Event &b)
+    {
+        return a.time == b.time ? a.isin && !b.isin : a.time < b.time;
+    }
+};
+Event ev[MaxN * 3];
+int used[5];
+
 int main()
 {
+    io.read(n);
+    Rep(i, 1, n)
+    {
+        int a, b;
+        io.read(a, b);
+        ev[i] = { a, i, true };
+        ev[i + n] = { b, i, false };
+    }
+    std::sort(ev + 1, ev + 2 * n + 1);
+    Rep(i, 1, 2 * n)
+        if (ev[i].isin)
+        {
+            if (!used[0])
+                used[0] = ev[i].id;
+            else if (!used[1])
+                used[1] = ev[i].id;
+            else
+            {
+                io.print("NO\n");
+                return 0;
+            }
+        }
+        else
+        {
+            if (used[0] == ev[i].id)
+                used[0] = 0;
+            else
+                used[1] = 0;
+        }
+    io.print("YES\n");
     return 0;
 }
 

@@ -137,8 +137,68 @@ ImplPrint(u64t, "%" PRIu64);
 [[maybe_unused]] const int Inf = 0x3f3f3f3f;
 [[maybe_unused]] const i64t Inf64 = 0x3f3f3f3f3f3f3f3f;
 
+i64t exgcd(i64t x, i64t y, i64t &a, i64t &b)
+{
+    if (y == 0)
+    {
+        a = 1;
+        b = 0;
+        return x;
+    }
+    int r = exgcd(y, x % y, b, a);
+    b -= x / y * a;
+    return r;
+}
+
 int main()
 {
-    return 0;
+    i64t n, m, x, y, vx, vy;
+    io.read(n, m, x, y, vx, vy);
+    if (vx == 0)
+    {
+        if (x == 0 || x == n)
+            io.print("$ $\n", x, y == 0 || y == m ? y : vy > 0 ? m : 0);
+        else
+            io.print("-1\n");
+        return 0;
+    }
+    if (vy == 0)
+    {
+        if (y == 0 || y == m)
+            io.print("$ $\n", x == 0 || x == n ? x : vx > 0 ? n : 0, y);
+        else
+            io.print("-1\n");
+        return 0;
+    }
+
+    i64t p, q, r, d = x * vx - y * vy;
+    r = exgcd(n * vx, -m * vy, p, q);
+    if (d % r)
+    {
+        io.print("-1\n");
+        return 0;
+    }
+    p *= d / r;
+    q *= d / r;
+    echo("%ld %ld\n", p, q);
+    r = std::abs(r);
+    // vx * (p * n - x) < 0
+    if (p * vx < 0 || (p == 0 && x * vx > 0))
+    {
+        i64t diff = -vx * p / (m / r) + !(p % (m / r) == 0 && p != 0);
+        echo("%d 1\n", vx * (p * n - x) < 0);
+        p += diff * (m / r) * vx;
+        q += diff * (n / r) * vy;
+    }
+    else
+    {
+        // (p * n - x) / lcm
+        i64t diff = vx * p / (m / r) - (p % (m / r) == 0 && p != 0);
+        echo("%d 0 %ld\n", vx * (p * n - x) < 0, diff);
+        p -= diff * (m / r) * vx;
+        q -= diff * (n / r) * vy;
+    }
+    echo("%ld %ld\n", p, q);
+    io.print("$ $\n", p % 2 ? n : 0, q % 2 ? m : 0);
 }
 

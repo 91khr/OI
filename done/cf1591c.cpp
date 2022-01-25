@@ -7,6 +7,7 @@
 #if !defined(DEBUG)
 #    define BUFFERED_IO
 #endif  // DEBUG
+#define BUFFERED_IO
 namespace Useful_Helpers {
 void Unused(...) {}
 #if defined(DEBUG) || defined(DEBUG_ECHO)
@@ -132,13 +133,47 @@ ImplPrint(u64t, "%" PRIu64);
 [[maybe_unused]] auto &io = IO_Helper::io_impl;
 } using namespace Useful_Helpers;
 
-[[maybe_unused]] const int MaxN = int(1e5) + 7;
+[[maybe_unused]] const int MaxN = int(2e5) + 7;
 [[maybe_unused]] const i64t Mod = int(1e9) + 7;
 [[maybe_unused]] const int Inf = 0x3f3f3f3f;
 [[maybe_unused]] const i64t Inf64 = 0x3f3f3f3f3f3f3f3f;
 
+i64t ai[2][MaxN], ni[2];
+int n, k;
+
+void solve()
+{
+    io.read(n, k);
+    ni[0] = ni[1] = 0;
+    Rep(i, 1, n)
+    {
+        int p;
+        io.read(p);
+        ai[p > 0][++ni[p > 0]] = std::abs(p);
+    }
+    std::sort(ai[0] + 1, ai[0] + ni[0] + 1);
+    std::sort(ai[1] + 1, ai[1] + ni[1] + 1);
+    Rep(t, 0, 1)
+    {
+        Rep(i, 1, ni[t])
+            echo("%ld ", ai[t][i]);
+        echo("\n");
+    }
+    i64t ans = -std::max(ai[0][ni[0]], ai[1][ni[1]]);
+    Rep(t, 0, 1)
+    {
+        for (int i = ni[t]; i > 0; i -= k)
+            ans += 2 * ai[t][i];
+    }
+    io.print("$\n", ans);
+}
+
 int main()
 {
+    int T;
+    io.read(T);
+    while (T--)
+        solve();
     return 0;
 }
 

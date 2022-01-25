@@ -4,9 +4,8 @@
 #include <cinttypes>
 #include <cstring>
 #include <algorithm>
-#if !defined(DEBUG)
-#    define BUFFERED_IO
-#endif  // DEBUG
+#include <queue>
+#define BUFFERED_IO
 namespace Useful_Helpers {
 void Unused(...) {}
 #if defined(DEBUG) || defined(DEBUG_ECHO)
@@ -132,13 +131,47 @@ ImplPrint(u64t, "%" PRIu64);
 [[maybe_unused]] auto &io = IO_Helper::io_impl;
 } using namespace Useful_Helpers;
 
-[[maybe_unused]] const int MaxN = int(1e5) + 7;
+[[maybe_unused]] const int MaxN = int(2e5) + 7;
 [[maybe_unused]] const i64t Mod = int(1e9) + 7;
 [[maybe_unused]] const int Inf = 0x3f3f3f3f;
 [[maybe_unused]] const i64t Inf64 = 0x3f3f3f3f3f3f3f3f;
 
+i64t val[MaxN];
+
+// Find i < j, such that forall s < t in (i, j), a[t] - a[s] > -d,
+// Maximize j - i
+
+void solve()
+{
+    int n, diff;
+    io.read(n, diff);
+    io.read(val, 1, n);
+
+    int l = 1, r = 0;
+    i64t pre = 1, sum = 0;
+    Rep(i, 1, n)
+    {
+        sum += val[i];
+        while (sum < -diff && pre <= i)
+            sum -= val[pre++];
+        if (i - pre > r - l)
+        {
+            r = i;
+            l = pre;
+        }
+    }
+    if (r < l)
+        io.print("-1\n");
+    else
+        io.print("$ $\n", l, r);
+}
+
 int main()
 {
+    int T;
+    io.read(T);
+    while (T--)
+        solve();
     return 0;
 }
 

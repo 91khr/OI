@@ -4,9 +4,9 @@
 #include <cinttypes>
 #include <cstring>
 #include <algorithm>
-#if !defined(DEBUG)
-#    define BUFFERED_IO
-#endif  // DEBUG
+#include <vector>
+#include <set>
+#define BUFFERED_IO
 namespace Useful_Helpers {
 void Unused(...) {}
 #if defined(DEBUG) || defined(DEBUG_ECHO)
@@ -132,13 +132,51 @@ ImplPrint(u64t, "%" PRIu64);
 [[maybe_unused]] auto &io = IO_Helper::io_impl;
 } using namespace Useful_Helpers;
 
-[[maybe_unused]] const int MaxN = int(1e5) + 7;
+[[maybe_unused]] const int MaxN = int(5e4) + 7;
 [[maybe_unused]] const i64t Mod = int(1e9) + 7;
 [[maybe_unused]] const int Inf = 0x3f3f3f3f;
 [[maybe_unused]] const i64t Inf64 = 0x3f3f3f3f3f3f3f3f;
 
+std::vector<int> ins;
+std::set<int> pos;
+int n, m;
+
 int main()
 {
+    io.read(n, m);
+    while (m--)
+    {
+        char op;
+        int id;
+        io.read(op);
+        switch (op)
+        {
+        case 'R':
+            pos.erase(ins.back());
+            ins.pop_back();
+            break;
+        case 'D':
+            io.read(id);
+            ins.push_back(id);
+            pos.insert(id);
+            break;
+        case 'Q':
+            io.read(id);
+            if (auto it = pos.lower_bound(id); it != pos.end() && *it == id)
+            {
+                io.print("0\n");
+                break;
+            }
+            else
+            {
+                int hi = it == pos.end() ? n + 1 : *it;
+                int lo = it == pos.begin() ? 0 : *--it;
+                echo("pos: %d %d\n", lo, hi);
+                io.print("$\n", hi - lo - 1);
+            }
+            break;
+        }
+    }
     return 0;
 }
 

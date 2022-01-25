@@ -4,9 +4,7 @@
 #include <cinttypes>
 #include <cstring>
 #include <algorithm>
-#if !defined(DEBUG)
-#    define BUFFERED_IO
-#endif  // DEBUG
+#define BUFFERED_IO
 namespace Useful_Helpers {
 void Unused(...) {}
 #if defined(DEBUG) || defined(DEBUG_ECHO)
@@ -132,13 +130,35 @@ ImplPrint(u64t, "%" PRIu64);
 [[maybe_unused]] auto &io = IO_Helper::io_impl;
 } using namespace Useful_Helpers;
 
-[[maybe_unused]] const int MaxN = int(1e5) + 7;
+[[maybe_unused]] const int MaxN = int(2e5) + 7;
 [[maybe_unused]] const i64t Mod = int(1e9) + 7;
 [[maybe_unused]] const int Inf = 0x3f3f3f3f;
 [[maybe_unused]] const i64t Inf64 = 0x3f3f3f3f3f3f3f3f;
 
+int queue[MaxN];
+
+void solve()
+{
+    int n;
+    io.read(n);
+    int head = 0;
+    while (n--)
+    {
+        int a;
+        io.read(a);
+        while (head > 0 && queue[head] <= a)
+            --head;
+        queue[++head] = a;
+    }
+    io.print("$\n", head - 1);
+}
+
 int main()
 {
+    int T;
+    io.read(T);
+    while (T--)
+        solve();
     return 0;
 }
 
